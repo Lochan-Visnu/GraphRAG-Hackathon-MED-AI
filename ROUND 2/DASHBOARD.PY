@@ -11,7 +11,8 @@ from google import genai
 from google.genai import types
 
 # ── 1. CONFIGURATION & ENGINE INSTANTIATION ───────────────────────────
-API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyB82wOx9YGrJQHXc0T6SqUY-87AgPGHfOk")
+# API key is pulled safely via environment variables. Do not hardcode strings here.
+API_KEY = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
 MODEL_ID = "gemini-2.5-flash-lite"
 CSV_FILE = "med_ai_100M_engine.csv"
 DB_PATH = "chroma_db_100M"
@@ -120,13 +121,13 @@ def run_pipeline_3_graph_rag(query):
     except Exception as e:
         return f"Pipeline 3 Error: {str(e)}", 0, 0, 0, 0
 
-# ── 3. ADVANCED COMBINED BIO-TECH CONTROL PANEL ───────────────────────
-class L3UnifiedCommandCenter:
+# ── 3. COMBINED CLINICAL CONTROL PANEL ───────────────────────────────
+class UnifiedCommandCenter:
     def __init__(self, root):
         self.root = root
         self.root.title("Med AI | Tri-Pipeline Cross-Examiner Terminal")
         self.root.geometry("1400x880")
-        self.root.configure(bg="#0A0D1A") # Deep Sci-Fi Midnight Blue
+        self.root.configure(bg="#0A0D1A") 
 
         self.setup_ui_layout()
 
@@ -149,6 +150,8 @@ class L3UnifiedCommandCenter:
         self.entry_query = tk.Entry(control_frame, font=("Segoe UI", 12), bg="#0A0D1A", fg="#FFFFFF", insertbackground="white", borderwidth=0, width=50)
         self.entry_query.pack(side=tk.LEFT, padx=10, ipady=6, pady=10)
         self.entry_query.insert(0, "Enter your disease here : ")
+        
+        self.entry_query.bind("<FocusIn>", lambda e: self.entry_query.delete(0, 'end') if "Enter your disease" in self.entry_query.get() else None)
         
         self.btn_run = tk.Button(control_frame, text="LAUNCH SYNCHRONIZED SCANS", command=self.dispatch_evaluation,
                                  bg="#00E5FF", fg="#0A0D1A", font=("Segoe UI Bold", 10), relief="flat", padx=20, cursor="hand2")
@@ -199,7 +202,7 @@ class L3UnifiedCommandCenter:
 
     def dispatch_evaluation(self):
         query = self.entry_query.get().strip()
-        if not query: return
+        if not query or "Enter your disease" in query: return
         
         self.btn_run.config(state="disabled", text="RUNNING REAL-TIME CROSS SCAN...")
         
@@ -208,7 +211,7 @@ class L3UnifiedCommandCenter:
             pipe["text_area"].insert(tk.END, ">>> Triggering data indexing loops...\n>>> Synthesizing responses...\n")
             for k in pipe["metrics"]: pipe["metrics"][k][0].set("Computing...")
 
-        # Fire off independent analysis backend sequences simultaneously in secondary processing structures
+        # Fire off independent analysis backend sequences simultaneously
         threading.Thread(target=self.execute_async_grid, args=(query,), daemon=True).start()
 
     def execute_async_grid(self, query):
@@ -237,7 +240,7 @@ class L3UnifiedCommandCenter:
 if __name__ == "__main__":
     try:
         root_window = tk.Tk()
-        app = L3UnifiedCommandCenter(root_window)
+        app = UnifiedCommandCenter(root_window)
         root_window.mainloop()
     except Exception as fatal_err:
         print(f"❌ Structural Platform Execution Collapse: {fatal_err}")
